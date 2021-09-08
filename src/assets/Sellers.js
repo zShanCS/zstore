@@ -1,7 +1,7 @@
 export const Sellers = [
   {
     id: '1',
-    soldItems: [
+    items: [
       '3', '2'
     ]
   },

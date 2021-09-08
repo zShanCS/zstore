@@ -14,7 +14,17 @@ const Products = () => {
       <ul>
         {
           items.map(i => (
-            <li key={i.id}>{i.name} - {i.price}</li>
+            <li key={i.id}>
+
+              <p>
+                {i.name} - {i.price}
+                <button onClick={() => {
+                  API.getReviews(i.id, '2')
+                    .then(res => console.log(res))
+                }}>View Reviews</button>
+              </p>
+
+            </li>
           ))
         }
       </ul>

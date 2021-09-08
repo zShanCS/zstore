@@ -1,12 +1,17 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import API from '../API';
 
 const Header = () => {
   return (
     <header>
       <span className='logo'>zStore</span>
       <NavLink to='/Home'>Home</NavLink>
-      <NavLink to='/products'>Products</NavLink>
+      <NavLink to='/Register'>Register</NavLink>
+      <NavLink to='/Products'>Products</NavLink>
+      <NavLink to='/Cart'>Cart</NavLink>
+      <NavLink to='/Profile'>Profile</NavLink>
+      <button onClick={() => API.printAll()}>PrintAll</button>
     </header>
   )
 }
