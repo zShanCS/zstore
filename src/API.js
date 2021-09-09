@@ -36,11 +36,17 @@ const API = {
 
   //user apis
   registerUser: async (uname, pword) => {
-    if (pword.length < 8) return { status: 'error', issue: 'Password must be more than 8 characters' }
-    if (await checkUname(uname)) {
+    if (pword.length < 8)
+      return {
+        status: 'failed', issue: 'Password must be more than 8 characters'
+      }
+    if (!(await usernameExists(uname))) {
+      console.log('username is unique af')
       const id = await generateUniqueUserId();
+      const secret = await generateSecret(id);
       const newUser = {
         id,
+        secret,
         uname,
         name: uname,
         password: pword,
@@ -52,12 +58,40 @@ const API = {
         }
       };
       Users.push(newUser);
-      return { status: 'success' }
+      return {
+        secret,
+        status: 'success',
+        name: newUser.name,
+        isSeller: newUser.isSeller,
+        username: newUser.username,
+        favoriteCategories: newUser.favoriteCategories,
+        cart: newUser.cart
+      }
     }
-    return false;
+    return { status: 'failed', issue: 'username exists' };
   },
   getCart: async (userId) => {
     return Users.filter(user => user.id === userId)[0].cart;
+  },
+  userLogin: async (uname, pword) => {
+    const user = Users.find(user => user.username === uname);
+    if (user && user.password === pword) {
+      let secret = await generateSecret(user.id)
+      Users.find(u => u.id === user.id).secret = secret;
+      return {
+        secret,
+        status: 'success',
+        name: user.name,
+        isSeller: user.isSeller,
+        username: user.username,
+        favoriteCategories: user.favoriteCategories,
+        cart: user.cart
+      }
+    }
+    return {
+      status: 'failed',
+      issue: 'username or password wrong'
+    }
   },
 
   //categories
@@ -74,9 +108,8 @@ const API = {
 
 }
 
-async function checkUname(uname) {
-  if (!Users.find(x => x.username === uname)) return true;
-  return false;
+async function usernameExists(uname) {
+  return (!(!Users.find(u => u.username === uname)))
 }
 async function generateUniqueUserId() {
   let nid = Math.random().toString();
@@ -87,6 +120,9 @@ async function generateUniqueUserId() {
 }
 function idExists(id) {
   return !(!Users.find(x => x.id === id));
+}
+async function generateSecret(id) {
+  return `${id}-${Math.random()}`
 }
 
 export default API;

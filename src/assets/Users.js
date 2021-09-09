@@ -1,6 +1,7 @@
 export const Users = [
   {
     id: '1',
+    secret: 'zshan1.1.0.47324637643',
     name: 'zshan ahmad',
     username: 'zshan1',
     password: '1234',

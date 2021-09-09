@@ -11,6 +11,7 @@ const Header = () => {
       <NavLink to='/Products'>Products</NavLink>
       <NavLink to='/Cart'>Cart</NavLink>
       <NavLink to='/Profile'>Profile</NavLink>
+      <NavLink to='/Login'>Login</NavLink>
       <button onClick={() => API.printAll()}>PrintAll</button>
     </header>
   )

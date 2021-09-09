@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../API";
-const Register = () => {
+const Login = () => {
 
   const [uname, setUname] = useState('');
   const [pword, setPword] = useState('');
@@ -25,16 +25,16 @@ const Register = () => {
       setUError('username too short')
       return
     }
-    if (pword.length < 8) {
+    if (pword.length < 4) {
       setPError('password too short')
       return
     }
 
-    API.registerUser(uname, pword)
+    API.userLogin(uname, pword)
       .then(res => {
         console.log(res)
         if (res.status === 'success') {
-          localStorage.setItem('auth', res.secret)
+          localStorage.setItem('auth', res.secret);
           nav('/Profile')
         }
 
@@ -44,6 +44,9 @@ const Register = () => {
 
   return (
     <div>
+      <h1>
+        Login
+      </h1>
       <form onSubmit={(e) => { handleRegister(e); e.preventDefault(); }}>
         <div>
           <label>
@@ -64,10 +67,10 @@ const Register = () => {
           {perror}
         </div>
         <div>
-          <button type='submit'>Register</button>
+          <button type='submit'>Login</button>
         </div>
       </form>
     </div>
   )
 }
-export default Register
+export default Login
