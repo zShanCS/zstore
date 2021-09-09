@@ -8,13 +8,12 @@ const Login = () => {
   const [pword, setPword] = useState('');
   const [uerror, setUError] = useState('');
   const [perror, setPError] = useState('');
-
+  const [user, setUser] = useContext(Context)
 
   useEffect(() => {
     document.title = 'Login';
   }, [])
 
-  const setUser = useContext(Context)[1]
 
   const nav = useNavigate()
 
@@ -44,7 +43,7 @@ const Login = () => {
       console.log(result);
       if (result.status === 'authenticated') {
         setUser(result);
-        localStorage.setItem('auth', result.user.secret);
+        localStorage.setItem('auth', JSON.stringify(result));
         nav('/Profile', { replace: true });
       }
       else {

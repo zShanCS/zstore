@@ -43,7 +43,7 @@ const Register = () => {
         if (res.status === 'authenticated') {
           console.log(res)
           setUser(res);
-          localStorage.setItem('auth', res.user.secret)
+          localStorage.setItem('auth', JSON.stringify(res));
           nav('/Profile')
         }
 

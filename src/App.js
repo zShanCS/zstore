@@ -25,7 +25,7 @@ const PrivateRoute = (props) => {
 }
 
 const App = () => {
-
+  const [user, setUser] = useContext(Context)
   return (
     <div>
       <BrowserRouter>
