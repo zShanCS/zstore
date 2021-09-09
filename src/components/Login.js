@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../API";
 import { Context } from "../context";
@@ -9,7 +9,12 @@ const Login = () => {
   const [uerror, setUError] = useState('');
   const [perror, setPError] = useState('');
 
-  const [_user, setUser] = useContext(Context);
+
+  useEffect(() => {
+    document.title = 'Login';
+  }, [])
+
+  const setUser = useContext(Context)[1]
 
   const nav = useNavigate()
 
@@ -37,10 +42,10 @@ const Login = () => {
     try {
       const result = await API.userLogin(uname, pword);
       console.log(result);
-      if (result.status === 'success') {
-        setUser(result.user);
+      if (result.status === 'authenticated') {
+        setUser(result);
         localStorage.setItem('auth', result.user.secret);
-        nav('/Profile');
+        nav('/Profile', { replace: true });
       }
       else {
         throw new Error('Login Failed')

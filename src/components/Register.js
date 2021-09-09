@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../API";
+import { Context } from "../context";
 const Register = () => {
 
   const [uname, setUname] = useState('');
   const [pword, setPword] = useState('');
   const [uerror, setUError] = useState('');
   const [perror, setPError] = useState('');
+  const [user, setUser] = useContext(Context);
   const nav = useNavigate()
+
+
+  useEffect(() => {
+    document.title = 'Register';
+  }, [])
 
   function handleInput(e) {
     let name = e.currentTarget.name
@@ -33,8 +40,9 @@ const Register = () => {
     API.registerUser(uname, pword)
       .then(res => {
         console.log(res)
-        if (res.status === 'success') {
+        if (res.status === 'authenticated') {
           console.log(res)
+          setUser(res);
           localStorage.setItem('auth', res.user.secret)
           nav('/Profile')
         }
@@ -45,6 +53,7 @@ const Register = () => {
 
   return (
     <div>
+      <h1>Register</h1>
       <form onSubmit={(e) => { handleRegister(e); e.preventDefault(); }}>
         <div>
           <label>

@@ -1,18 +1,23 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../context";
 const Profile = () => {
 
   const [user, setUser] = useContext(Context);
 
+
+  useEffect(() => {
+    document.title = 'Profile';
+  }, [])
+
   function handleLogout() {
     localStorage.removeItem('auth');
-    setUser(undefined);
+    setUser({ status: 'failed' });
   }
   return (
     <div>
       {
-        user ?
+        user.status === 'authenticated' ?
           <div>
             <p>Welcome To Your Profile {user.name}</p>
             <button onClick={() => handleLogout()} >Logout</button>

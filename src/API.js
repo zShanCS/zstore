@@ -2,30 +2,30 @@ import { Categories } from "./assets/Categories";
 import { Items } from "./assets/Items";
 import { Reviews } from "./assets/Reviews";
 import { Users } from "./assets/Users";
-
+const myDelay = 1000;
 const API = {
   //item apis
   fetchItems: async () => {
-    await fakeDelay(3000)
+    await fakeDelay(myDelay)
     return [...Items];
   },
   searchItem: async (searchTerm) => {
-    await fakeDelay(3000)
+    await fakeDelay(myDelay)
     return Items.filter(item => item.name.match(searchTerm))
   },
   fetchCategory: async (category) => {
-    await fakeDelay(3000)
+    await fakeDelay(myDelay)
     return Items.filter(item => item.category === category)
   },
   addDetailView: async (itemId, userId) => {
-    await fakeDelay(3000)
+    await fakeDelay(myDelay)
     Items.filter(item => item.id === itemId)[0].detailViews.add(userId);
   },
 
 
   //reviews
   getReviews: async (itemId, userId) => {
-    await fakeDelay(3000)
+    await fakeDelay(myDelay)
     const reviews = Reviews.filter(review => review.itemId === itemId);
     return reviews.map(review => ({
       ...review,
@@ -40,7 +40,7 @@ const API = {
 
   //user apis
   registerUser: async (uname, pword) => {
-    await fakeDelay(3000)
+    await fakeDelay(myDelay)
     if (pword.length < 8)
       return {
         status: 'failed', issue: 'Password must be more than 8 characters'
@@ -65,7 +65,7 @@ const API = {
       Users.push(newUser);
       return {
 
-        status: 'success',
+        status: 'authenticated',
         user: {
           secret,
           name: newUser.name,
@@ -80,18 +80,18 @@ const API = {
     return { status: 'failed', issue: 'username exists' };
   },
   getCart: async (userId) => {
-    await fakeDelay(3000)
+    await fakeDelay(myDelay)
     return Users.filter(user => user.id === userId)[0].cart;
   },
   userLogin: async (uname, pword) => {
-    await fakeDelay(3000)
+    await fakeDelay(myDelay)
     const user = Users.find(user => user.username === uname);
     if (user && user.password === pword) {
       let secret = await generateSecret(user.id)
       Users.find(u => u.id === user.id).secret = secret;
       return {
 
-        status: 'success',
+        status: 'authenticated',
         user: {
           secret,
           name: user.name,
@@ -108,10 +108,34 @@ const API = {
       issue: 'username or password wrong'
     }
   },
+  authenticateUser: async (secret) => {
+    const user = Users.find(u => u.secret === secret)
+    if (user) {
+      return {
+        status: 'authenticated',
+        userData: {
+          secret,
+          name: user.name,
+          isSeller: user.isSeller,
+          username: user.username,
+          favoriteCategories: user.favoriteCategories,
+          cart: user.cart
+        },
+      }
+    }
+    else {
+      return {
+        status: 'failed',
+        issue: 'cant authenticate user'
+      }
+    }
+
+  }
+  ,
 
   //categories
   getCategories: async () => {
-    await fakeDelay(3000)
+    await fakeDelay(myDelay)
     return Categories;
   },
 

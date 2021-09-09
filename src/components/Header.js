@@ -14,9 +14,9 @@ const Header = () => {
 
 
       {
-        user ?
+        user.status === 'authenticated' ?
           (<>
-            <NavLink to='/Cart'>Cart</NavLink>
+            <NavLink to='/Cart'>Cart ({user.cart?.cartItems.length})</NavLink>
             <NavLink to='/Profile'>Profile</NavLink>
           </>
           )

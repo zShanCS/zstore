@@ -5,20 +5,20 @@ import { Context } from "../context";
 const Cart = () => {
 
   const [user] = useContext(Context);
-  const navigate = useNavigate();
+
 
   useEffect(() => {
-    if (!user) { navigate('/Login') };
-  }, [user, navigate]);
+    document.title = 'Cart';
+  }, [])
 
 
   return (
     <div>
       {
-        user &&
+        user.status === 'authenticated' &&
         <>
           Cart is :
-          {JSON.stringify(user.cart)}
+          {JSON.stringify(user.user.cart)}
         </>
       }
     </div>

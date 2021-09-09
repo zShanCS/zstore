@@ -6,7 +6,13 @@ export const Context = createContext()
 //so everything in the App gets the user context
 //so the children prop will actually be the whole App
 const UserProvider = ({ children }) => {
-  const [state, setState] = useState(undefined);
+  const [state, setState] = useState(() => {
+    if (localStorage.getItem('auth')) {
+      return { status: 'pending' };
+    }
+    return { status: 'failed' };
+
+  });
 
   return (
     //so now all children can access the context's provided
