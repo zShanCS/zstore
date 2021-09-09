@@ -34,7 +34,8 @@ const Register = () => {
       .then(res => {
         console.log(res)
         if (res.status === 'success') {
-          localStorage.setItem('auth', res.secret)
+          console.log(res)
+          localStorage.setItem('auth', res.user.secret)
           nav('/Profile')
         }
 

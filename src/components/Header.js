@@ -1,17 +1,31 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import API from '../API';
+import { Context } from '../context';
 
 const Header = () => {
+  const [user] = useContext(Context);
+  console.log('header says:', user)
   return (
     <header>
       <span className='logo'>zStore</span>
       <NavLink to='/Home'>Home</NavLink>
-      <NavLink to='/Register'>Register</NavLink>
       <NavLink to='/Products'>Products</NavLink>
-      <NavLink to='/Cart'>Cart</NavLink>
-      <NavLink to='/Profile'>Profile</NavLink>
-      <NavLink to='/Login'>Login</NavLink>
+
+
+      {
+        user ?
+          (<>
+            <NavLink to='/Cart'>Cart</NavLink>
+            <NavLink to='/Profile'>Profile</NavLink>
+          </>
+          )
+          :
+          (<>
+            <NavLink to='/Login'>Login</NavLink>
+            <NavLink to='/Register'>Register</NavLink>
+          </>)
+      }
       <button onClick={() => API.printAll()}>PrintAll</button>
     </header>
   )

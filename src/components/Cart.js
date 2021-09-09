@@ -1,9 +1,26 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Context } from "../context";
 
 const Cart = () => {
+
+  const [user] = useContext(Context);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) { navigate('/Login') };
+  }, [user, navigate]);
+
+
   return (
     <div>
-      Cart
+      {
+        user &&
+        <>
+          Cart is :
+          {JSON.stringify(user.cart)}
+        </>
+      }
     </div>
   )
 }

@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../API";
+import { Context } from "../context";
 const Login = () => {
 
   const [uname, setUname] = useState('');
   const [pword, setPword] = useState('');
   const [uerror, setUError] = useState('');
   const [perror, setPError] = useState('');
+
+  const [_user, setUser] = useContext(Context);
+
   const nav = useNavigate()
 
   function handleInput(e) {
@@ -19,7 +23,7 @@ const Login = () => {
       setPword(val)
     }
   }
-  function handleRegister(e) {
+  async function handleRegister(e) {
 
     if (uname.length < 3) {
       setUError('username too short')
@@ -30,15 +34,20 @@ const Login = () => {
       return
     }
 
-    API.userLogin(uname, pword)
-      .then(res => {
-        console.log(res)
-        if (res.status === 'success') {
-          localStorage.setItem('auth', res.secret);
-          nav('/Profile')
-        }
-
-      });
+    try {
+      const result = await API.userLogin(uname, pword);
+      console.log(result);
+      if (result.status === 'success') {
+        setUser(result.user);
+        localStorage.setItem('auth', result.user.secret);
+        nav('/Profile');
+      }
+      else {
+        throw new Error('Login Failed')
+      }
+    } catch (error) {
+      console.log('big fat error happened', error);
+    }
 
   }
 

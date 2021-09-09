@@ -9,6 +9,8 @@ const UserProvider = ({ children }) => {
   const [state, setState] = useState(undefined);
 
   return (
+    //so now all children can access the context's provided
+    //state and setState
     <Context.Provider value={[state, setState]}>
       {children}
     </Context.Provider>
