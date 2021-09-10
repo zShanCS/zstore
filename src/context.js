@@ -11,9 +11,8 @@ const UserProvider = ({ children }) => {
     if (storedUser) {
       const user = JSON.parse(storedUser);
       if (user.status === 'authenticated')
-        return user;
+        return { status: 'pending', secret: user.user.secret }
     }
-
     return { status: 'failed' };
 
   });

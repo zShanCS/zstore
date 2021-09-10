@@ -5,7 +5,6 @@ import { Context } from '../context';
 
 const Header = () => {
   const [user] = useContext(Context);
-  console.log('header says:', user)
   return (
     <header>
       <span className='logo'>zStore</span>
@@ -16,7 +15,7 @@ const Header = () => {
       {
         user.status === 'authenticated' ?
           (<>
-            <NavLink to='/Cart'>Cart ({user.cart?.cartItems.length})</NavLink>
+            <NavLink to='/Cart'>Cart ({user.user?.cart.cartItems.length})</NavLink>
             <NavLink to='/Profile'>Profile</NavLink>
           </>
           )
@@ -26,7 +25,16 @@ const Header = () => {
             <NavLink to='/Register'>Register</NavLink>
           </>)
       }
-      <button onClick={() => API.printAll()}>PrintAll</button>
+      <button onClick={() => {
+        let u = JSON.parse(localStorage.getItem('auth'))
+        console.log(u)
+        u && API.authenticateUser(
+          u.user.secret
+        )
+      }
+      }
+
+      >PrintAll</button>
     </header>
   )
 }

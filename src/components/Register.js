@@ -8,7 +8,7 @@ const Register = () => {
   const [pword, setPword] = useState('');
   const [uerror, setUError] = useState('');
   const [perror, setPError] = useState('');
-  const [user, setUser] = useContext(Context);
+  const setUser = useContext(Context)[1]
   const nav = useNavigate()
 
 
@@ -27,11 +27,19 @@ const Register = () => {
     }
   }
   function handleRegister(e) {
-
     if (uname.length < 3) {
       setUError('username too short')
       return
     }
+    try {
+      if (uname.match('~')) {
+        setUError('cant have ~');
+        return
+      }
+    } catch (error) {
+      console.log(error)
+    }
+
     if (pword.length < 8) {
       setPError('password too short')
       return

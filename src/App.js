@@ -14,7 +14,6 @@ import API from "./API";
 
 const PrivateRoute = (props) => {
   const [user] = useContext(Context)
-  console.log('user status', user)
 
   if (user.status === 'authenticated') {
     return <Route {...props} />
@@ -26,6 +25,25 @@ const PrivateRoute = (props) => {
 
 const App = () => {
   const [user, setUser] = useContext(Context)
+
+  console.log('App rerendered', user)
+
+  useEffect(() => {
+    if (user.status === 'pending') {
+      console.log('authetication testing for user')
+      API.authenticateUser(user.secret)
+        .then(
+          res => {
+            setUser(res)
+          }
+        )
+    }
+  }, [user, setUser])
+
+  if (user.status === 'pending') {
+    return <Spinner />
+  }
+
   return (
     <div>
       <BrowserRouter>

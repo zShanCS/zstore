@@ -1,7 +1,7 @@
 export const Users = [
   {
     id: '1',
-    secret: '1-0.47324637643',
+    secret: '1~0.47324637643',
     name: 'zshan ahmad',
     username: 'zshan1',
     password: '1234',
@@ -13,10 +13,6 @@ export const Users = [
         {
           id: '1',
           quantity: 4
-        },
-        {
-          id: '2',
-          quantity: 5
         }
       ]
     }
@@ -24,7 +20,7 @@ export const Users = [
   },
   {
     id: '2',
-    secret: '2-0.47324637643',
+    secret: '2~0.47324637643',
     name: 'zshan second ahmad',
     username: 'zshan2',
     password: '1234',

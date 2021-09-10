@@ -7,7 +7,6 @@ export const Reviews = [
     comment: 'very cool item review',
     //upvottes and downvotes shold be sets not arrays
     upvotes: new Set(['2', '3', '5']),
-    downvotes: new Set(['4', '9']),
     date: ''
   },
   {
@@ -18,7 +17,6 @@ export const Reviews = [
     comment: 'very cool item review 2',
     //upvottes and downvotes shold be sets not arrays
     upvotes: new Set(['2', '3', '5']),
-    downvotes: new Set(['4', '9']),
     date: ''
   }
 ]
