@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import API from '../API';
 import { Context } from '../context';
 
 const Header = () => {
@@ -10,10 +9,8 @@ const Header = () => {
       <span className='logo'>zStore</span>
       <NavLink to='/Home'>Home</NavLink>
       <NavLink to='/Products'>Products</NavLink>
-
-
       {
-        user.status === 'authenticated' ?
+        user ?
           (<>
             <NavLink to='/Cart'>Cart ({user.user?.cart.cartItems.length})</NavLink>
             <NavLink to='/Profile'>Profile</NavLink>
@@ -26,11 +23,8 @@ const Header = () => {
           </>)
       }
       <button onClick={() => {
-        let u = JSON.parse(localStorage.getItem('auth'))
+        let u = localStorage.getItem('auth')
         console.log(u)
-        u && API.authenticateUser(
-          u.user.secret
-        )
       }
       }
 

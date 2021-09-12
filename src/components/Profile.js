@@ -10,14 +10,15 @@ const Profile = () => {
     document.title = 'Profile';
   }, [])
 
+
   function handleLogout() {
     localStorage.removeItem('auth');
-    setUser({ status: 'failed' });
+    setUser(false);
   }
   return (
     <div>
       {
-        user.status === 'authenticated' ?
+        user ?
           <div>
             <p>Welcome To Your Profile {user.name}</p>
             <button onClick={() => handleLogout()} >Logout</button>

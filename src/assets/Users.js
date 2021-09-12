@@ -16,7 +16,6 @@ export const Users = [
         }
       ]
     }
-
   },
   {
     id: '2',

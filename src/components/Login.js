@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import API from "../API";
 import { Context } from "../context";
 import Spinner from "./Spinner";
@@ -44,15 +44,18 @@ const Login = () => {
       setLoading(true)
       const result = await API.userLogin(uname, pword);
       console.log(result);
-      if (result.status === 'authenticated') {
+      if (result.status === 'success') {
         setLoading(false)
-        setUser(result);
-        localStorage.setItem('auth', JSON.stringify(result));
-        nav('/Profile', { replace: true });
+        setUser(true);
+        localStorage.setItem('auth', result.secret);
+        const redirect = localStorage.getItem('redirectTo');
+        console.log(redirect)
+        if (redirect) { localStorage.removeItem('redirectTo'); nav(redirect) }
+        else { nav('/Profile'); }
       }
       else {
         setLoading(false);
-        throw new Error('Login Failed')
+        setUError(result.message)
       }
     } catch (error) {
       console.log('big fat error happened', error);
@@ -88,6 +91,9 @@ const Login = () => {
           <button type='submit'>{loading ? <Spinner /> : 'Login'}</button>
         </div>
       </form>
+      <p>
+        Or Sign up <Link to='/register'>Sign Up</Link>
+      </p>
     </div>
   )
 }

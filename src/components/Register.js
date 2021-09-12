@@ -44,17 +44,23 @@ const Register = () => {
       setPError('password too short')
       return
     }
-
+    setPError('')
+    setUError('')
     API.registerUser(uname, pword)
       .then(res => {
         console.log(res)
-        if (res.status === 'authenticated') {
+        if (res.status === 'success') {
           console.log(res)
           setUser(res);
-          localStorage.setItem('auth', JSON.stringify(res));
-          nav('/Profile')
+          localStorage.setItem('auth', res.secret);
+          const redirect = localStorage.getItem('redirectTo');
+          console.log(redirect)
+          if (redirect) { localStorage.removeItem('redirectTo'); nav(redirect) }
+          else { nav('/Profile'); }
         }
-
+        else {
+          setUError(res.message)
+        }
       });
 
   }

@@ -7,14 +7,8 @@ export const Context = createContext()
 //so the children prop will actually be the whole App
 const UserProvider = ({ children }) => {
   const [state, setState] = useState(() => {
-    const storedUser = localStorage.getItem('auth');
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      if (user.status === 'authenticated')
-        return { status: 'pending', secret: user.user.secret }
-    }
-    return { status: 'failed' };
-
+    const storedSecret = localStorage.getItem('auth');
+    if (storedSecret) return true;
   });
 
   return (

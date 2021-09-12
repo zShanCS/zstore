@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from "react";
-import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
+import React, { useContext } from "react";
+import { BrowserRouter, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import Header from "./components/Header";
 import Home from "./components/Home";
 import Products from './components/Products'
@@ -9,41 +9,21 @@ import Register from "./components/Register";
 import NotFound from "./components/NotFound";
 import Login from "./components/Login";
 import { Context } from "./context";
-import Spinner from "./components/Spinner";
-import API from "./API";
-
 const PrivateRoute = (props) => {
+  const location = useLocation()
+
   const [user] = useContext(Context)
 
-  if (user.status === 'authenticated') {
+  if (user) {
     return <Route {...props} />
   }
   else {
+    localStorage.setItem('redirectTo', location.pathname)
     return <Navigate to='/Login' />
   }
 }
 
 const App = () => {
-  const [user, setUser] = useContext(Context)
-
-  console.log('App rerendered', user)
-
-  useEffect(() => {
-    if (user.status === 'pending') {
-      console.log('authetication testing for user')
-      API.authenticateUser(user.secret)
-        .then(
-          res => {
-            setUser(res)
-          }
-        )
-    }
-  }, [user, setUser])
-
-  if (user.status === 'pending') {
-    return <Spinner />
-  }
-
   return (
     <div>
       <BrowserRouter>

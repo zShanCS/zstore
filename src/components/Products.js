@@ -15,26 +15,35 @@ const Products = () => {
     let isSubscribed = true;
     (
       async () => {
-        const items = await API.fetchItems();
-        if (isSubscribed) setItems(items);
+        const res = await API.fetchItems();
+        console.log(res);
+        if (res.status === 'success')
+          if (isSubscribed) setItems(res.items);
       }
     )()
     return () => { isSubscribed = false; console.log('produs subscription cancelled') }
   }, [])
+
+  function handleAddToCart(id) {
+    setLoading(true);
+    API.addToCart(localStorage.getItem('auth'), id, 4)
+      .then(res => {
+        setLoading(false);
+        console.log(res)
+      })
+  }
 
   const itemList = items.map(i => (
     <li key={i.id}>
 
       <p>
         {i.name} - {i.price}
-        <button onClick={(e) => {
-          setLoading(true);
-          API.getReviews(i.id, '2')
-            .then(res => {
-              setLoading(false);
-              console.log(res)
-            })
-        }}>{loading ? <Spinner /> : 'Show Review'}</button>
+        <button
+          onClick={(e) => {
+            handleAddToCart(i.id)
+          }}>
+          {loading ? <Spinner /> : 'Show Review'}
+        </button>
       </p>
 
     </li>
