@@ -7,6 +7,64 @@ const headers = {
   'Content-Type': 'application/json'
 }
 //item apis
+const createItem = async (name, price, quantity, category, secret) => {
+  try {
+    price = Number(price)
+    quantity = parseInt(quantity)
+    if (name.length < 4) {
+      return { status: 'failed', message: 'name too small' }
+    }
+    if (name.length > 151) {
+      return { status: 'failed', message: 'name too large' }
+    }
+    if (price <= 0) {
+      return { status: 'failed', message: 'price too small' }
+    }
+    if (category === '') {
+      return { status: 'failed', message: 'no category entered' }
+    }
+    if (quantity < 1) {
+      return { status: 'failed', message: 'quantity too small' }
+    }
+    //no error found
+    //lets make the item to save it on db
+    //but first get the users id thats trying to save it
+    //and see if that user is valid or not
+    const userRes = await getUserBySecret(secret);
+    if (userRes.status === 'success' && userRes.user.isSeller) {
+      //user exists and is registered as a seller
+      const newItem = {
+        name,
+        price,
+        quantity,
+        category: [category],
+        interest: 0,
+        lastUpdated: new Date(),
+        posted: new Date(),
+        rating: 0,
+        seller: userRes.user.id,
+        images: [],
+        thumb: '',
+      }
+      const itemRes = await postItem(newItem);
+      if (itemRes.status === 'success') {
+        //item saved in db successfully
+        return { status: 'success', newItem: itemRes.newItem }
+      }
+      else {
+        //item could not be saved in db
+        return { status: 'failed', message: 'failed to save item in db' }
+      }
+    }
+    else {
+      //user not found or is not a seller
+      return { status: 'failed', message: 'user cant be validated or is not a seller' }
+    }
+  } catch (error) {
+    return { status: 'failed', message: `something went wrong: ${error.message}` }
+  }
+}
+
 const getItems = async () => {
   try {
     return { status: 'success', items: await (await fetch(`${BASE_LINK}items/`)).json() };
@@ -84,10 +142,10 @@ const addToCart = async (secret, itemId, quantity) => {
       //quality less than 1
       return { status: 'failed', message: 'quality incorrect. can only be positive integer less than 11' }
     }
-    const resItem = await getItem(itemId);
-    if (resItem.status === 'success') {
+    const itemResult = await getItem(itemId);
+    if (itemResult.status === 'success') {
       //item found
-      const item = resItem.item;
+      const item = itemResult.item;
       if (item.quantity >= quantity) {
         //quantity allowed
         const userRes = await getUserBySecret(secret);
@@ -162,7 +220,7 @@ const registerUser = async (uname, pword) => {
       }
     }
     const res = await postUser(newUser);
-    if (res.hasOwnProperty('id')) {
+    if (res.status === 'success' && res.newuser.hasOwnProperty('id')) {
       return {
         status: 'success',
         secret: res.secret
@@ -213,16 +271,18 @@ const userLogin = async (uname, pword) => {
 }
 
 const getUserBySecret = async (secret) => {
-  const res = await (await fetch(`${BASE_LINK}users?secret=${secret}`)).json()
-  if (res.length < 1) {
-    return { status: 'failed', message: 'no user found' }
-  }
-  else {
-    return {
-      status: 'success',
-      user: res[0]
+  try {
+    const res = await (await fetch(`${BASE_LINK}users?secret=${secret}`)).json()
+    if (res.length < 1) {
+      return { status: 'failed', message: 'no user found' }
     }
+    else {
+      return { status: 'success', user: res[0] }
+    }
+  } catch (error) {
+    return { status: 'failed', message: `soemthing went wrong: ${error.message}` }
   }
+
 }
 
 
@@ -266,13 +326,26 @@ async function getUserByUserName(username) {
 function generateSecret(uname) {
   return `${uname}~${Math.random()}`
 }
-async function getUserById(id) {
-  const res = await (await fetch(`${BASE_LINK}users/${id}`)).json()
-  return res;
+// async function getUserById(id) {
+//   const res = await (await fetch(`${BASE_LINK}users/${id}`)).json()
+//   return res;
+// }
+
+async function postItem(data) {
+  try {
+    const res = (await fetch(`${BASE_LINK}items`, { headers, method: "POST", body: JSON.stringify(data) })).json()
+    return { status: 'success', newItem: res }
+  } catch (error) {
+    return { status: 'failed', message: 'item creation failed' }
+  }
 }
 async function postUser(data) {
-  const res = (await fetch(`${BASE_LINK}users`, { headers, method: "POST", body: JSON.stringify(data) })).json()
-  return res
+  try {
+    const res = (await fetch(`${BASE_LINK}users`, { headers, method: "POST", body: JSON.stringify(data) })).json()
+    return { status: 'success', newuser: res }
+  } catch (error) {
+    return { status: 'failed', message: 'user creation failed' }
+  }
 }
 async function updateUser(data, id) {
   try {
@@ -301,6 +374,7 @@ const API = {
   userLogin,
   authenticateUser: getUserBySecret,
   addToCart,
-  printAll
+  printAll,
+  createItem
 }
 export default API;

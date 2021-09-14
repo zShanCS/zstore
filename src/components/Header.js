@@ -9,6 +9,7 @@ const Header = () => {
       <span className='logo'>zStore</span>
       <NavLink to='/Home'>Home</NavLink>
       <NavLink to='/Products'>Products</NavLink>
+      <NavLink to='/AddProduct'>Post New Product</NavLink>
       {
         user ?
           (<>

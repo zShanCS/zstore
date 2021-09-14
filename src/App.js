@@ -8,6 +8,7 @@ import Cart from './components/Cart'
 import Register from "./components/Register";
 import NotFound from "./components/NotFound";
 import Login from "./components/Login";
+import AddProduct from "./components/AddProduct";
 import { Context } from "./context";
 const PrivateRoute = (props) => {
   const location = useLocation()
@@ -34,6 +35,7 @@ const App = () => {
           <Route path='/Home' element={<Home />} />
           <PrivateRoute path='/Cart' element={<Cart />} />
           <Route path='/Register' element={<Register />} />
+          <PrivateRoute path='/AddProduct' element={<AddProduct />} />
           <Route path='/Login' element={<Login />} />
           <Route exact path='/' element={<Home />} />
           <Route path='*' element={<NotFound />} />
