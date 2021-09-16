@@ -1,26 +1,39 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import API from "../API";
 import Spinner from "./Spinner";
 const Products = () => {
 
+  const [loading, setLoading] = useState(true);
   const [items, setItems] = useState([]);
-
+  const [error, setError] = useState(false);
+  const isSubscribed = useRef(true);
 
   useEffect(() => {
     document.title = 'Products';
   }, [])
 
-  useEffect(() => {
-    let isSubscribed = true;
-    (
-      async () => {
-        const res = await API.fetchItems();
-        console.log(res);
-        if (res.status === 'success' && isSubscribed)
-          setItems(res.items);
+  async function fetchItems() {
+    isSubscribed.current = true;
+    setLoading(true);
+    setError(false);
+
+    const res = await API.fetchItems();
+    console.log(res);
+    if (res.status === 'success' && isSubscribed.current) {
+      setItems(res.items);
+      setLoading(false);
+    }
+    else {
+      if (isSubscribed.current) {
+        setError(true);
+        setLoading(false);
       }
-    )()
-    return () => { isSubscribed = false; }
+    }
+  }
+
+  useEffect(() => {
+    fetchItems();
+    return () => { isSubscribed.current = false; }
   }, [])
 
   function handleAddToCart(e, id) {
@@ -29,7 +42,10 @@ const Products = () => {
     API.addToCart(localStorage.getItem('auth'), id, 4)
       .then(res => {
         console.log(res)
-        target.innerText = 'done'
+        if (res.status === 'success')
+          target.innerText = 'done'
+        else
+          target.innerText = 'try again'
       })
   }
 
@@ -49,22 +65,20 @@ const Products = () => {
     </li>
   ))
 
+  if (error) return <div>Something went wrong. <button onClick={() => { fetchItems() }} >Refresh</button> </div>
+  if (loading) return <Spinner />
   return (
     <div>
       <h2>Products</h2>
       {
-        items.length < 1
-          ?
-          <Spinner />
-          :
-          <>
-            {JSON.stringify(items)}
-            <ul>
-              {
-                itemList
-              }
-            </ul>
-          </>
+        <>
+          {JSON.stringify(items)}
+          <ul>
+            {
+              itemList
+            }
+          </ul>
+        </>
       }
 
 

@@ -100,7 +100,11 @@ async function updateItem(data, id) {
   }
 }
 const searchItem = async (searchTerm) => {
-
+  const itemsRes = await getItems();
+  if (itemsRes.status === 'success') {
+    return { status: 'success', items: itemsRes.items.filter(i => i.name.match(searchItem)) }
+  }
+  else return { status: 'failed' }
 }
 const fetchCategory = async (category) => {
   try {
